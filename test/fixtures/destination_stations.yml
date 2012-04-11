@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  destination_id: 1
+  station_id: 1
+
+two:
+  destination_id: 1
+  station_id: 1

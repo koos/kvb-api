@@ -1,0 +1,11 @@
+= semantic_form_for [:admin, @station] do |f|
+  = f.inputs :parent, :name, :platform, :description, :lat, :lng, :station_identifier
+  #amenities
+    = "Amenities"
+    %ul
+      - Station::AMENITIES.each do |amenity|
+        %li
+          = f.check_box amenity
+          = f.label amenity
+
+  = f.buttons :commit 

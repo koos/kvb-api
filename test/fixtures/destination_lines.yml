@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  line_id: 1
+  destination_id: 1
+
+two:
+  line_id: 1
+  destination_id: 1
