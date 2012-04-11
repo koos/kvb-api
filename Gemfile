@@ -49,6 +49,8 @@ gem 'yajl-ruby'
 gem 'pg'
 gem 'heroku'
 
+gem 'taps'
+
 group :development do 
   gem 'sqlite3'
 end
