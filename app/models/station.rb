@@ -6,6 +6,10 @@ class Station < ActiveRecord::Base
   has_and_belongs_to_many :lines
   has_many :destinations
 
+  has_many :stops
+
+  accepts_nested_attributes_for :stops
+
   has_flags 1 => :kiosk,
             2 => :restroom,
             3 => :accessibility,
@@ -25,7 +29,7 @@ class Station < ActiveRecord::Base
 
   AMENITIES = [:kiosk, :restroom, :accessibility, :elovator, :escalator, :underground, :elevated, :ground, :ticket_machine, :park_and_ride, :bike_box, :backery, :food, :police, :phone]
 
-  validates_presence_of :name, :lat, :lng, :station_identifier
+  validates_presence_of :name
 
   # needed by the API
   def amenities_list
