@@ -20,7 +20,9 @@ Lines = Struct.new(:line_id) do
 private
 
   def table
-    response = open("http://www.kvb-koeln.de/german/hst/showline/0/#{line_id}/")
+    url = "http://www.kvb-koeln.de/german/hst/showline/0/#{line_id}/"
+    puts "opening: #{url}"
+    response = open(url)
     Nokogiri::HTML.parse(response).css("#content table")
   end
 

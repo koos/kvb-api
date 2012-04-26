@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120425131258) do
+ActiveRecord::Schema.define(:version => 20120426115835) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -67,11 +67,27 @@ ActiveRecord::Schema.define(:version => 20120425131258) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "line_connections", :force => true do |t|
+    t.integer  "station_connection_id"
+    t.integer  "line_id"
+    t.integer  "order"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
   create_table "lines", :force => true do |t|
     t.string   "number"
     t.string   "kind"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "station_connections", :force => true do |t|
+    t.integer  "station_a_id"
+    t.integer  "station_b_id"
+    t.float    "distance"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "stations", :force => true do |t|

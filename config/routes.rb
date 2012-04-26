@@ -3,6 +3,6 @@ KvbApi::Application.routes.draw do
 
   devise_for :admin_users, ActiveAdmin::Devise.config
 
-  resources :stations, :only => [:show]
+  resources :stations, :only => [:show, :index]
 
 end

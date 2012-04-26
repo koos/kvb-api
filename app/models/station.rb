@@ -3,7 +3,6 @@ class Station < ActiveRecord::Base
   include FlagShihTzu
   acts_as_nested_set
 
-  has_and_belongs_to_many :lines
   has_many :destinations
 
   has_many :stops
@@ -38,5 +37,12 @@ class Station < ActiveRecord::Base
     end.compact
   end
 
+  def station_connections
+    @station_connections ||= (StationConnection.find_all_by_station_a_id(self.id) << StationConnection.find_all_by_station_b_id(self.id)).flatten.uniq
+  end
+
+  def lines
+    @lines ||= station_connections.map(&:lines).flatten.uniq
+  end
 end
 
