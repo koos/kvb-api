@@ -83,4 +83,16 @@ class Station < ActiveRecord::Base
       return :down
     end
   end
+
+  def upper_station(line)
+    station_connections_a.select { |sc|
+      sc.line_connections.any? { |lc| lc.line_id == line.id }
+    }.first.try :station_b
+  end
+
+  def lower_station(line)
+    station_connections_b.select { |sc|
+      sc.line_connections.any? { |lc| lc.line_id == line.id }
+    }.first.try :station_a
+  end
 end

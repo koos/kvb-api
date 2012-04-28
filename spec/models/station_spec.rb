@@ -102,5 +102,15 @@ describe Station do
       @unconnected_station.direction(@line, @station3).should be_nil
       @station2.direction(FactoryGirl.create(:line), @station3).should be_nil
     end
+
+    it "should return the lower station if there is one" do
+      @station2.upper_station(@line).id.should eql(@station3.id)
+      @station4.upper_station(@line).should be_nil
+    end
+
+    it "should return the upper station if there is one" do
+      @station1.lower_station(@line).should be_nil
+      @station3.lower_station(@line).id.should eql(@station2.id)
+    end
   end
 end
