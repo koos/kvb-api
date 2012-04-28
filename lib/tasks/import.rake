@@ -1,3 +1,4 @@
+# encoding: utf-8
 # https://raw.github.com/bitboxer/kvb_geo/master/kvb_stops.json
 namespace :import do
 
@@ -49,6 +50,18 @@ namespace :import do
         puts "Exception while processing station #{station.kvb_id}: #{e}"
       end
     end
+  end
+
+  desc "Create initial mapping between stations and their aliases"
+  task :station_alias_mapping => [:environment] do
+    Station.associate_aliases_for "Weiden West S-Bahn", ["Weiden West", "WEIDEN WEST"]
+    Station.associate_aliases_for "Zollstock Südfriedhof", ["Zollstock", "ZOLLSTOCK"]
+    Station.associate_aliases_for "Zündorf", ["ZüNDORF"]
+    Station.associate_aliases_for "Reichenspergerplatz", ["REICHENSPERGERPL.", "Reichensp. Pl."]
+    Station.associate_aliases_for "Brühl Mitte", ["Brühl", "BRüHL", "Brühl Bonn", "BRüHL BONN"]
+    Station.associate_aliases_for "Sülzgürtel", ["SüLZGÜRTEL"]
+    Station.associate_aliases_for "Klettenbergpark", ["Klettenberg", "KLETTENBERG"]
+    Station.associate_aliases_for "Bonn Bad Godesberg Stadthalle", ["Bad Godesberg", "Bonn Bad Godesberg"]
   end
 end
 task :all => ["import:stations", "import:lines", "import:destinations"]

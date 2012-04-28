@@ -30,6 +30,16 @@ class Station < ActiveRecord::Base
 
   validates_presence_of :name
 
+  def self.associate_aliases_for(station_name, aliases)
+    station = self.find_by_name(station_name)
+    if station
+      [aliases].flatten.each do |alias_name|
+        station = StationAlias.find_by_name(alias_name)
+        station.update_attribute :station_id, station.id if station
+      end
+    end
+  end
+
   # needed by the API
   def amenities_list
     self.class.flag_mapping["features"].keys.map do |flag|
