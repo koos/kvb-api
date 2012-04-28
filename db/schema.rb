@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(:version => 20120428134843) do
     t.float    "distance"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.integer  "travel_time"
   end
 
   create_table "stations", :force => true do |t|
@@ -100,4 +101,5 @@ ActiveRecord::Schema.define(:version => 20120428134843) do
     t.string  "type"
     t.integer "station_id"
   end
+
 end
