@@ -107,8 +107,4 @@ namespace :import do
     Station.associate_aliases_for "Bonn Bad Godesberg Stadthalle", ["Bad Godesberg", "Bonn Bad Godesberg"]
   end
 end
-<<<<<<< HEAD
-task :all => ["import:stations", "import:lines", "import:destinations"]
-=======
-task :all => ["import:stations", "import:lines", "import:travel_times"]
->>>>>>> Add task for importing travel time between stations. It also fixes all station and line connections.
+task :all => ["import:stations", "import:lines", "import:travel_times", "import:destinations"]
