@@ -31,8 +31,9 @@ gem 'yajl-ruby'
 gem 'pg'
 gem 'heroku'
 
-group :development do
+group :development, :test do
   gem 'taps'
   gem 'sqlite3'
   gem 'pry-rails'
+  gem 'factory_girl_rails'
 end

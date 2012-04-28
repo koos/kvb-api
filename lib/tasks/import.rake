@@ -106,5 +106,7 @@ namespace :import do
     Station.associate_aliases_for "Klettenbergpark", ["Klettenberg", "KLETTENBERG"]
     Station.associate_aliases_for "Bonn Bad Godesberg Stadthalle", ["Bad Godesberg", "Bonn Bad Godesberg"]
   end
+
+  task :all => ["import:stations", "import:lines", "import:travel_times", "import:destinations", "import:station_alias_mapping"]
 end
-task :all => ["import:stations", "import:lines", "import:travel_times", "import:destinations"]
+

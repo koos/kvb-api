@@ -5,7 +5,8 @@ class Station < ActiveRecord::Base
   has_many :station_aliases
 
   has_many :stops
-  has_many :station_connections, foreign_key: 'station_a_id'
+  has_many :station_connections_a, class_name: "StationConnection", foreign_key: 'station_a_id'
+  has_many :station_connections_b, class_name: "StationConnection", foreign_key: 'station_b_id'
 
   accepts_nested_attributes_for :stops
 
@@ -40,6 +41,10 @@ class Station < ActiveRecord::Base
     end
   end
 
+  def self.with_name_or_alias(name_or_alias)
+    self.joins(:station_aliases).where("'stations'.'name' = :b OR 'station_aliases'.'name' = :b", {b: name_or_alias}).first
+  end
+
   # needed by the API
   def amenities_list
     self.class.flag_mapping["features"].keys.map do |flag|
@@ -48,10 +53,34 @@ class Station < ActiveRecord::Base
   end
 
   def station_connections
-    @station_connections ||= (StationConnection.find_all_by_station_a_id(self.id) << StationConnection.find_all_by_station_b_id(self.id)).flatten.uniq
+    (station_connections_a + station_connections_b).flatten.uniq
   end
 
   def lines
     @lines ||= station_connections.map(&:lines).flatten.uniq
+  end
+
+  def line_connections(line = nil)
+    station_connections.map { |sc|
+      if line
+        sc.line_connections.select { |lc| lc.line_id == line.id }
+      else
+        sc.line_connections
+      end
+    }.flatten.uniq
+  end
+
+  # gotcha: returns nil if self and station are on same position
+  def direction(line, station)
+    my_position    = self.line_connections(line).map    { |lc| lc.order }.min
+    other_position = station.line_connections(line).map { |lc| lc.order }.min
+
+    return nil if !my_position || !other_position
+
+    if my_position < other_position
+      return :up
+    elsif my_position > other_position
+      return :down
+    end
   end
 end
