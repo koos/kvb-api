@@ -1,13 +1,15 @@
 class StationsController < ApplicationController
+  include Roar::Rails::ControllerAdditions
+  respond_to :json
 
   def index
-    respond_to { |format|
-      format.json { render :json => Station.all }
-    }
+    @stations = Station.all
+    respond_with(@stations)
   end
 
   def show
-    @station = Station.find_by_station_identifier(params[:id])
+    @station = Station.find(params[:id])
+    respond_with(@station, :with_representer => SingleStationRepresenter)
   end
 
 end

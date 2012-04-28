@@ -7,9 +7,6 @@ gem 'json'
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
-
-  # gem 'therubyracer'
-
   gem 'uglifier', '>= 1.0.3'
 end
 
@@ -26,10 +23,10 @@ gem "rspec-rails", "~> 2.6"
 gem 'awesome_nested_set'
 gem 'haml'
 
-gem 'rabl'
 gem 'yajl-ruby'
 gem 'pg'
 gem 'heroku'
+gem 'roar-rails'
 
 group :development, :test do
   gem 'taps'
