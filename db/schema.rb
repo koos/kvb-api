@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120426115835) do
+ActiveRecord::Schema.define(:version => 20120428134843) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -46,27 +46,6 @@ ActiveRecord::Schema.define(:version => 20120426115835) do
   add_index "admin_users", ["email"], :name => "index_admin_users_on_email", :unique => true
   add_index "admin_users", ["reset_password_token"], :name => "index_admin_users_on_reset_password_token", :unique => true
 
-  create_table "destination_lines", :force => true do |t|
-    t.integer  "line_id"
-    t.integer  "destination_id"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
-  end
-
-  create_table "destination_stations", :force => true do |t|
-    t.integer  "destination_id"
-    t.integer  "station_id"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
-  end
-
-  create_table "destinations", :force => true do |t|
-    t.string   "name"
-    t.integer  "station_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
   create_table "line_connections", :force => true do |t|
     t.integer  "station_connection_id"
     t.integer  "line_id"
@@ -81,6 +60,15 @@ ActiveRecord::Schema.define(:version => 20120426115835) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "station_aliases", :force => true do |t|
+    t.integer  "station_id"
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "station_aliases", ["station_id"], :name => "index_station_aliases_on_station_id"
 
   create_table "station_connections", :force => true do |t|
     t.integer  "station_a_id"
@@ -112,5 +100,4 @@ ActiveRecord::Schema.define(:version => 20120426115835) do
     t.string  "type"
     t.integer "station_id"
   end
-
 end

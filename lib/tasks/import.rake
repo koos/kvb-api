@@ -33,5 +33,22 @@ namespace :import do
       puts "------"
     end
   end
+
+  desc "Get destinations for lines"
+  task :destinations => [:environment] do
+    require 'arrivals'
+    Line.bahn_stations.each do |station|
+      begin
+        arrivals = Arrivals.new(station.kvb_id).call
+        arrivals.each do |arrival|
+          unless Station.where(name: arrival[:destination]).any?
+            StationAlias.find_or_create_by_name(arrival[:destination])
+          end
+        end
+      rescue Exception => e
+        puts "Exception while processing station #{station.kvb_id}: #{e}"
+      end
+    end
+  end
 end
-task :all => ["import:stations", "import:lines"]
+task :all => ["import:stations", "import:lines", "import:destinations"]

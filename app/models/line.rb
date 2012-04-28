@@ -7,8 +7,13 @@ class Line < ActiveRecord::Base
 
   before_validation :save_kind
 
+  # FIXME move to station
+  def self.bahn_stations
+    where(kind: 'bahn').inject([]) { |memo, line| memo << line.stations }.flatten.uniq
+  end
+
   def save_kind
-    self.kind = (number.to_i > 18) ? 'bus' : 'bahn'
+    self.kind = (number.to_i > 100) ? 'bus' : 'bahn'
   end
 
   def stations

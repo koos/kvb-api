@@ -1,11 +1,11 @@
 class Station < ActiveRecord::Base
-
   include FlagShihTzu
   acts_as_nested_set
 
-  has_many :destinations
+  has_many :station_aliases
 
   has_many :stops
+  has_many :station_connections, foreign_key: 'station_a_id'
 
   accepts_nested_attributes_for :stops
 
@@ -45,4 +45,3 @@ class Station < ActiveRecord::Base
     @lines ||= station_connections.map(&:lines).flatten.uniq
   end
 end
-
