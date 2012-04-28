@@ -83,7 +83,7 @@ namespace :import do
     require 'arrivals'
     Line.bahn_stations.each do |station|
       begin
-        arrivals = Arrivals.new(station.kvb_id).call
+        arrivals = Arrivals.new(station.kvb_id).import.all
         arrivals.each do |arrival|
           unless Station.where(name: arrival[:destination]).any?
             StationAlias.find_or_create_by_name(arrival[:destination])
