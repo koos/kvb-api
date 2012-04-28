@@ -34,7 +34,7 @@ namespace :import do
 
           # The first line contains the travel times
           raw_times = station_names.shift.gsub(' ', '')
-          
+
           # Split the string into travel times
           travel_times = []
           begin
@@ -42,7 +42,7 @@ namespace :import do
             travel_times << $1.to_i
           end while raw_times.length > 0
 
-          # Get station records by 
+          # Get station records by
           stations = station_names.map { |name| Station.find_by_name(name) }.compact
 
           if stations.size != station_names.size
