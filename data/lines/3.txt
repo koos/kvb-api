@@ -1,0 +1,32 @@
+01 03 04 05 06 08 09 10 11 12 14 15 17 19 20 22 24 26 28 30 32 34 36 37 39 40 41 43 44 46
+Ollenhauerring
+Schaffrathsgasse
+Bocklemünd
+Westfriedhof
+Wolffsohnstr.
+Akazienweg
+Äußere Kanalstr.
+Leyendeckerstr.
+Venloer Str./Gürtel
+Körnerstr.
+Piusstr.
+Hans-Böckler-Platz/Bf West
+Friesenplatz
+Appellhofplatz
+Neumarkt
+Poststr.
+Severinstr.
+Suevenstr.
+Bf Deutz/LANXESS arena
+Koelnmesse
+Stegerwaldsiedlung
+Buchforst Waldecker Str.
+Buchheim Frankfurter Str.
+Buchheim Herler Str.
+Wichheimer Str.
+Holweide Vischeringstr.
+Maria-Himmelfahrt-Str.
+Neufelder Str.
+Dellbrück Mauspfad
+Dellbrück Hauptstr.
+Thielenbruch
