@@ -34,4 +34,5 @@ gem 'heroku'
 group :development do
   gem 'taps'
   gem 'sqlite3'
+  gem 'pry-rails'
 end

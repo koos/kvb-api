@@ -47,6 +47,7 @@ GEM
     bourbon (1.4.0)
       sass (>= 3.1)
     builder (3.0.0)
+    coderay (1.0.6)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0)
@@ -114,6 +115,7 @@ GEM
       activerecord (~> 3.1)
       activesupport (~> 3.1)
       polyamorous (~> 0.5.0)
+    method_source (0.7.1)
     mime-types (1.18)
     multi_json (1.2.0)
     netrc (0.7.1)
@@ -123,6 +125,12 @@ GEM
     polyamorous (0.5.0)
       activerecord (~> 3.0)
     polyglot (0.3.3)
+    pry (0.9.9.4)
+      coderay (~> 1.0.5)
+      method_source (~> 0.7.1)
+      slop (>= 2.4.4, < 3)
+    pry-rails (0.1.6)
+      pry
     rabl (0.6.8)
       activesupport (>= 2.3.14)
       multi_json (~> 1.0)
@@ -178,6 +186,7 @@ GEM
     sequel (3.20.0)
     sinatra (1.0)
       rack (>= 1.0)
+    slop (2.4.4)
     sprockets (2.1.2)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -221,6 +230,7 @@ DEPENDENCIES
   json
   nokogiri
   pg
+  pry-rails
   rabl
   rails (= 3.2.2)
   rspec-rails (~> 2.6)
