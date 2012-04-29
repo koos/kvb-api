@@ -19,4 +19,35 @@ class Line < ActiveRecord::Base
   def stations
     @station_ids ||= self.station_connections.map(&:station_a) << self.station_connections.last.station_b
   end
+
+
+  def self.cached_routes
+    @cached_routes ||= begin
+      data = Line.all.map do |line|
+        route = {}
+        
+        line.station_connections.each do |station_connection|
+          station = station_connection.station_b
+
+          if prev_station = route[station_connection.station_a.kvb_id]
+            prev_station[:travel_time_up] = station_connection.travel_time
+          else
+            # Special case for first station on route
+            route[station_connection.station_a.kvb_id] = {
+              station: station_connection.station_a,
+              travel_time_up: station_connection.travel_time,
+              travel_time_down: 0
+            }
+          end
+          
+          route[station.kvb_id] = { station: station, travel_time_up: 0, travel_time_down: station_connection.travel_time }
+        end
+
+        [line.number, route]
+      end
+
+      Hash[data]
+    end
+  end
+
 end
