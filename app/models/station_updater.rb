@@ -1,5 +1,4 @@
 class StationUpdater
-
   def self.run
     Pusher.app_id = 'your-pusher-app-id'
     Pusher.key = 'your-pusher-key'
@@ -8,7 +7,16 @@ class StationUpdater
     stations = Line.bahn_stations
     while(true)
       stations.each do |station|
-        StationUpdater.update_station(station)
+        begin
+          StationUpdater.update_station(station) do |vehicle|
+            Pusher['default'].trigger!('vehicle_update', vehicle.to_hash)
+          end
+        rescue Interrupt => i
+          exit
+        rescue Exception => e
+          Rails.logger.error { e.to_s }
+          Rails.logger.debugger { e.backtrace }
+        end
       end
     end
   end
@@ -36,7 +44,10 @@ class StationUpdater
       else
         Vehicle.vehicles[vehicle.grouping_id][vehicle.arrival_time_at_destination] = vehicle
       end
+
+      if block_given?
+        yield vehicle
+      end
     end
   end
-
 end
