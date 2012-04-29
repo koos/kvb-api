@@ -60,26 +60,26 @@ class Vehicle
   end
 
   def position
+
+    # Get previous position depending on direction
     previous_station = if self.direction == :up
       @station.upper_station(self.line)
     else
       @station.lower_station(self.line)
     end
 
-    Rails.logger.debug { "Prev: #{previous_station.inspect}" }
-    Rails.logger.debug { "Next: #{@station.inspect}" }
-
     distance = RVincenty.distance(@station.coordinates, previous_station.coordinates)
-
     connection = StationConnection.find_by_stations(@station, previous_station)
-      
-
-
     percentage_traveled = (connection.travel_time - travel_time_to_station).to_f / connection.travel_time
 
-    #result.x = start.x * (1 - percentageTraveled) + end.x * percentageTraveled
-    #result.y = start.y * (1 - percentageTraveled) + end.y * percentageTraveled
+    # Calculating new position
+    longitude = previous_station.lng * (1 - percentage_traveled) + @station.lng * percentage_traveled
+    latitude = previous_station.lat * (1 - percentage_traveled) + @station.lat * percentage_traveled
 
+    [latitude, longitude]
+  rescue => ex
+    Rails.logger.error { "--- Error while calculating position: #{ex.to_s}" }
+    nil
   end
 
   def arrival_time_at_destination
