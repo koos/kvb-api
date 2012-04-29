@@ -1,5 +1,14 @@
 class StationUpdater
-  
+
+  def self.run
+    stations = Line.bahn_stations
+    while(true)
+      stations.each do |station|
+        StationUpdater.update_station(station)
+      end
+    end
+  end
+
   def self.update_station(station)
     vehicles = Vehicle.at_station(station)
 
