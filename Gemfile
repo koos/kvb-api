@@ -27,6 +27,7 @@ gem 'yajl-ruby'
 gem 'pg'
 gem 'heroku'
 gem 'roar-rails'
+gem 'pusher'
 
 group :development, :test do
   gem 'taps'
