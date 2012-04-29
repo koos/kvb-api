@@ -86,9 +86,9 @@ class Station < ActiveRecord::Base
     end
     return nil if !my_pos || !other_pos
 
-    if my_pos < other_pos
+    if my_pos > other_pos
       return :up
-    elsif my_pos > other_pos
+    elsif my_pos < other_pos
       return :down
     end
   end
