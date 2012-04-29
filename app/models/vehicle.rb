@@ -15,7 +15,12 @@ class Vehicle
       if line = Line.find_by_number(arrival[:line])
         if destination = Station.with_name_or_alias(arrival[:destination])
           direction = station.direction(line, destination) # :up, :down, nil
-          Vehicle.new(line, direction, destination, station, arrival[:arrival])
+          if direction
+            Vehicle.new(line, direction, destination, station, arrival[:arrival])
+          else
+            Rails.logger.debug { "Couldn't get direction #{station.kvb_id}, #{arrival.inspect}" }
+            nil
+          end
         end
       else
         Rails.logger.debug { "Could not find #{arrival.inspect}" }
