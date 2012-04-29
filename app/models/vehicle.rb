@@ -2,17 +2,24 @@ require 'arrivals'
 
 class Vehicle
 
-  attr_accessor :line, :destination, :direction, :position, :speed
+  cattr_accessor :vehicles
+
+  @@vehicles = {}
+
+  attr_accessor :line, :destination, :direction, :position, :speed, :travel_time_to_station
 
   def self.at_station(station)
     arrivals = Arrivals.new(station.kvb_id).import.trains
 
     arrivals.map do |arrival|
-      line = Line.find_by_number(arrival[:line])
-      Rails.logger.debug { "Line: #{line.number} => #{arrival[:destination]}" }
-      if destination = Station.with_name_or_alias(arrival[:destination])
-        direction = station.direction(line, destination) # :up, :down, nil
-        Vehicle.new(line, direction, destination, station, arrival[:arrival])
+      if line = Line.find_by_number(arrival[:line])
+        if destination = Station.with_name_or_alias(arrival[:destination])
+          direction = station.direction(line, destination) # :up, :down, nil
+          Vehicle.new(line, direction, destination, station, arrival[:arrival])
+        end
+      else
+        Rails.logger.debug { "Could not find #{arrival.inspect}" }
+        nil
       end
     end.compact
   end
@@ -31,31 +38,56 @@ class Vehicle
   end
 
   def id
-    @id ||= nil
+    @id ||= begin
+      timestamp = arrival_time_at_destination.to_s(:db).gsub(/:/, '-').gsub(/ /, '-')
+      "#{self.line.number}-#{self.direction}-#{self.destination.kvb_id}-#{timestamp}"
+    end
+  end
+
+  def grouping_id
+    @id ||= begin
+      "#{self.line.number}-#{self.direction}-#{self.destination.kvb_id}"
+    end
   end
 
   def arrival_time_at_destination
     @arrival_time_at_destination ||= begin
       route = Line.cached_routes[line.number]
 
-      state = :delete
-      remaining_route = route.delete_if do |station_kvb_id, data|
-        if state == :delete and station_kvb_id == @station.kvb_id
-          state = :keep
-        end
-
-        if state == :keep
-          if station_kvb_id == destination.kvb_id
-            state == :delete
+      if self.direction == :up
+        state = :delete
+        remaining_route = route.delete_if do |station_kvb_id, data|
+          if state == :delete and station_kvb_id == @station.kvb_id
+            state = :keep
           end
-        end
 
-        state == :delete
+          if state == :keep
+            if station_kvb_id == destination.kvb_id
+              state == :delete
+            end
+          end
+
+          state == :delete
+        end
+      else
+        state = :delete
+        remaining_route = route.delete_if do |station_kvb_id, data|
+          if state == :delete and station_kvb_id == destination.kvb_id
+            state = :keep
+          end
+
+          if state == :keep
+            if station_kvb_id == @station.kvb_id
+              state == :delete
+            end
+          end
+
+          state == :delete
+        end
       end
 
-      #raise remaining_route.inspect
-
-      remaining_route.reduce(@travel_time_to_station) { |memo, row| memo += row.last[:travel_time_up] }
+      travel_tile_to_destination = remaining_route.reduce(@travel_time_to_station) { |memo, row| memo += row.last[:travel_time_up] }
+      travel_tile_to_destination.minutes.from_now
     end
   end
 
@@ -63,12 +95,14 @@ class Vehicle
     {
       line: self.line.number,
       id: self.id,
+      grouping_id: self.grouping_id,
       kind: self.kind,
       position: self.position,
       destination: self.destination,
       direction: self.direction,
       speed: self.speed,
-      arrival_time_at_destination: self.arrival_time_at_destination
+      arrival_time_at_destination: self.arrival_time_at_destination,
+      travel_time_to_station: @travel_time_to_station
     }
   end
 
