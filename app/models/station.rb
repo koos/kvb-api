@@ -95,4 +95,8 @@ class Station < ActiveRecord::Base
       sc.line_connections.any? { |lc| lc.line_id == line.id }
     }.first.try :station_a
   end
+
+  def coordinates
+    [self.lat, self.lng]
+  end
 end

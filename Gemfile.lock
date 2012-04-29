@@ -195,6 +195,7 @@ GEM
       rspec (~> 2.9.0)
     ruby-hmac (0.4.0)
     rubyzip (0.9.6.1)
+    rvincenty (0.1.0)
     sass (3.1.15)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
@@ -257,6 +258,7 @@ DEPENDENCIES
   rails (= 3.2.2)
   roar-rails
   rspec-rails (~> 2.6)
+  rvincenty
   sass-rails (~> 3.2.3)
   sqlite3
   taps

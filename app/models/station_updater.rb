@@ -26,7 +26,11 @@ class StationUpdater
 
     vehicles = vehicles.delete_if do |vehicle|
       regular_travel_time = Line.cached_routes[vehicle.line.number][station.kvb_id][:"travel_time_#{vehicle.direction}"]
-      vehicle.travel_time_to_station > (regular_travel_time + 1)
+      if regular_travel_time
+        vehicle.travel_time_to_station > (regular_travel_time + 1)
+      else
+        false
+      end
     end
 
     vehicles.compact.each do |vehicle|

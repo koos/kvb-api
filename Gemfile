@@ -28,6 +28,7 @@ gem 'pg'
 gem 'heroku'
 gem 'roar-rails'
 gem 'pusher'
+gem 'rvincenty'
 
 group :development, :test do
   gem 'taps'

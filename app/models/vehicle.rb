@@ -49,10 +49,37 @@ class Vehicle
     end
   end
 
+  def id=(value)
+    @id = value
+  end
+
   def grouping_id
     @id ||= begin
       "#{self.line.number}-#{self.direction}-#{self.destination.kvb_id}"
     end
+  end
+
+  def position
+    previous_station = if self.direction == :up
+      @station.upper_station(self.line)
+    else
+      @station.lower_station(self.line)
+    end
+
+    Rails.logger.debug { "Prev: #{previous_station.inspect}" }
+    Rails.logger.debug { "Next: #{@station.inspect}" }
+
+    distance = RVincenty.distance(@station.coordinates, previous_station.coordinates)
+
+    connection = StationConnection.find_by_stations(@station, previous_station)
+      
+
+
+    percentage_traveled = (connection.travel_time - travel_time_to_station).to_f / connection.travel_time
+
+    #result.x = start.x * (1 - percentageTraveled) + end.x * percentageTraveled
+    #result.y = start.y * (1 - percentageTraveled) + end.y * percentageTraveled
+
   end
 
   def arrival_time_at_destination
