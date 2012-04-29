@@ -72,14 +72,23 @@ class Station < ActiveRecord::Base
 
   # gotcha: returns nil if self and station are on same position
   def direction(line, station)
-    my_position    = self.line_connections(line).map    { |lc| lc.order }.min
-    other_position = station.line_connections(line).map { |lc| lc.order }.min
 
-    return nil if !my_position || !other_position
+    cached_line = Line.cached_routes[line.number] || {}
+    my_pos    = nil
+    other_pos = nil
+    pos = 0
 
-    if my_position < other_position
+
+    cached_line.each do |kvb_id, hsh|
+      my_pos    = pos if kvb_id == self.kvb_id
+      other_pos = pos if kvb_id == station.kvb_id
+      pos += 1
+    end
+    return nil if !my_pos || !other_pos
+
+    if my_pos < other_pos
       return :up
-    elsif my_position > other_position
+    elsif my_pos > other_pos
       return :down
     end
   end
