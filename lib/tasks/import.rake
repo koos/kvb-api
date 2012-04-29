@@ -139,6 +139,21 @@ namespace :import do
     Station.associate_aliases_for "Wahn S-Bahn", ["wahn s-bahn", "Wahn", "WAHN S-BAHN"]    
   end
 
+  desc "Add station gps data based on stops"
+  task :station_coordinates => [:environment] do
+    Station.all.each do |station|
+      if stop = station.stops.where("lat IS NOT NULL AND long IS NOT NULL").first
+        station.lat = stop.lat
+        station.lng = stop.long
+        station.save
+      else
+        if Line.bahn_stations.include?(station)
+          puts "#{station.kvb_id} #{station.name}"
+        end
+      end
+    end
+  end
+
   task :all => ["import:stations", "import:lines", "import:travel_times", "import:destinations", "import:station_alias_mapping"]
 end
 
