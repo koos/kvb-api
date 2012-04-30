@@ -17,11 +17,11 @@ class StationUpdater
           exit
         rescue Exception => e
           Rails.logger.error { e.to_s }
-          Rails.logger.debugger { e.backtrace }
+          Rails.logger.debug { e.backtrace }
         end
       end
 
-      Rails.logger.info { "--- size: #{Vehicle.vehicles.size}" }
+      Rails.logger.info { "--- Tracking vehicles on #{Vehicle.vehicles.size} routes" }
       Vehicle.vehicles.each do |key, value|
         Rails.logger.info { "#{key} => #{value.size}" }
       end
