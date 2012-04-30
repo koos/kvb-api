@@ -1,15 +1,17 @@
 class StationUpdater
   def self.run
-    Pusher.app_id = 'your-pusher-app-id'
-    Pusher.key = 'your-pusher-key'
-    Pusher.secret = 'your-pusher-secret'
-
-    stations = Line.bahn_stations
+    #stations = Line.bahn_stations
+    stations = Line.cached_routes['1'].collect { |key, value| value[:station] }
     while(true)
+
       stations.each do |station|
         begin
           StationUpdater.update_station(station) do |vehicle|
-            Pusher['default'].trigger!('vehicle_update', vehicle.to_hash)
+            Rails.logger.info { "--- Line: #{vehicle.line.number}" }
+            if vehicle.line.number == '1'
+              Rails.logger.info { "--- PUSHED NEW DATASET" }
+              Pusher['default'].trigger!('vehicle_update', vehicle.to_hash)
+            end
           end
         rescue Interrupt => i
           exit
@@ -18,6 +20,12 @@ class StationUpdater
           Rails.logger.debugger { e.backtrace }
         end
       end
+
+      Rails.logger.info { "--- size: #{Vehicle.vehicles.size}" }
+      Vehicle.vehicles.each do |key, value|
+        Rails.logger.info { "#{key} => #{value.size}" }
+      end
+
     end
   end
 
@@ -38,7 +46,7 @@ class StationUpdater
       data = Vehicle.vehicles[vehicle.grouping_id]
 
       match = data.find do |arrival_time, value|
-        (arrival_time - vehicle.arrival_time_at_destination).abs < 3.minutes
+        (arrival_time - vehicle.arrival_time_at_destination).abs < 5.minutes
       end
 
       if match

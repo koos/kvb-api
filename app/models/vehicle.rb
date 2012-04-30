@@ -12,13 +12,12 @@ class Vehicle
     arrivals = Arrivals.new(station.kvb_id).import.trains
 
     arrivals.map do |arrival|
-      if line = Line.find_by_number(arrival[:line])
+      if line = Line.cached_lines[arrival[:line]]
         if destination = Station.with_name_or_alias(arrival[:destination])
-          direction = station.direction(line, destination) # :up, :down, nil
-          if direction
+          if direction = station.direction(line, destination)
             Vehicle.new(line, direction, destination, station, arrival[:arrival])
           else
-            Rails.logger.debug { "Couldn't get direction #{station.kvb_id}, #{arrival.inspect}" }
+            Rails.logger.debug { "Couldn't get direction #{station.kvb_id}, #{arrival.inspect},  #{destination.inspect}" }
             nil
           end
         end
@@ -54,13 +53,12 @@ class Vehicle
   end
 
   def grouping_id
-    @id ||= begin
+    @grouping_id ||= begin
       "#{self.line.number}-#{self.direction}-#{self.destination.kvb_id}"
     end
   end
 
   def position
-
     # Get previous position depending on direction
     previous_station = if self.direction == :up
       @station.upper_station(self.line)
@@ -73,8 +71,8 @@ class Vehicle
     percentage_traveled = (connection.travel_time - travel_time_to_station).to_f / connection.travel_time
 
     # Calculating new position
-    longitude = previous_station.lng * (1 - percentage_traveled) + @station.lng * percentage_traveled
-    latitude = previous_station.lat * (1 - percentage_traveled) + @station.lat * percentage_traveled
+    longitude = @station.lng * (1 - percentage_traveled) + previous_station.lng * percentage_traveled
+    latitude = @station.lat * (1 - percentage_traveled) + previous_station.lat * percentage_traveled
 
     [latitude, longitude]
   rescue => ex
@@ -84,7 +82,7 @@ class Vehicle
 
   def arrival_time_at_destination
     @arrival_time_at_destination ||= begin
-      route = Line.cached_routes[line.number]
+      route = Line.cached_routes[line.number].dup
 
       if self.direction == :up
         state = :delete
@@ -130,7 +128,7 @@ class Vehicle
       grouping_id: self.grouping_id,
       kind: self.kind,
       position: self.position,
-      destination: self.destination,
+      destination: self.destination.name,
       direction: self.direction,
       speed: self.speed,
       arrival_time_at_destination: self.arrival_time_at_destination,

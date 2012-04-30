@@ -21,6 +21,10 @@ class Line < ActiveRecord::Base
   end
 
 
+  def self.cached_lines
+    @cached_lines ||= Line.all.reduce({}) { |r, l| r[l.number] = l; r }
+  end
+
   def self.cached_routes
     @cached_routes ||= begin
       data = Line.all.map do |line|
