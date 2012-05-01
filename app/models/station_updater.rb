@@ -4,14 +4,12 @@ class StationUpdater
     stations = Line.cached_routes['1'].collect { |key, value| value[:station] }
     while(true)
 
+      # Update data for all stations
       stations.each do |station|
         begin
           StationUpdater.update_station(station) do |vehicle|
-            Rails.logger.info { "--- Line: #{vehicle.line.number}" }
-            if vehicle.line.number == '1'
-              Rails.logger.info { "--- PUSHED NEW DATASET" }
-              Pusher['default'].trigger!('vehicle_update', vehicle.to_hash)
-            end
+            Rails.logger.info { "--- PUSHED NEW DATASET" }
+            Pusher['default'].trigger!('vehicle_update', vehicle.to_hash)
           end
         rescue Interrupt => i
           exit
@@ -44,18 +42,18 @@ class StationUpdater
     vehicles.compact.each do |vehicle|
       Vehicle.vehicles[vehicle.grouping_id] ||= {}
       data = Vehicle.vehicles[vehicle.grouping_id]
-
+      
       match = data.find do |arrival_time, value|
-        (arrival_time - vehicle.arrival_time_at_destination).abs < 5.minutes
+        (arrival_time - vehicle.arrival_time_at_destination).abs < 4.minutes
       end
 
+      # Remove outdated vehicle, but keep its id
       if match
-        Vehicle.vehicles[vehicle.grouping_id][match.first] = nil
         vehicle.id = match.last.id
-        Vehicle.vehicles[vehicle.grouping_id][vehicle.arrival_time_at_destination] = vehicle
-      else
-        Vehicle.vehicles[vehicle.grouping_id][vehicle.arrival_time_at_destination] = vehicle
+        Vehicle.vehicles[vehicle.grouping_id].delete(match.first)
       end
+
+      Vehicle.vehicles[vehicle.grouping_id][vehicle.arrival_time_at_destination] = vehicle
 
       if block_given?
         yield vehicle
