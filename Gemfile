@@ -29,10 +29,15 @@ gem 'heroku'
 gem 'roar-rails'
 gem 'pusher'
 gem 'rvincenty'
+gem 'sqlite3'
+
+group :development do
+  gem 'capistrano'
+  gem 'rvm-capistrano'
+end
 
 group :development, :test do
   gem 'taps'
-  gem 'sqlite3'
   gem 'pry-rails'
   gem 'factory_girl_rails'
 end
