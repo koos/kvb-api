@@ -273,6 +273,7 @@ DEPENDENCIES
   pry-rails
   pusher
   rails (= 3.2.2)
+  rake
   roar-rails
   rspec-rails (~> 2.6)
   rvincenty

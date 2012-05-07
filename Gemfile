@@ -30,6 +30,7 @@ gem 'roar-rails'
 gem 'pusher'
 gem 'rvincenty'
 gem 'sqlite3'
+gem 'rake'
 
 group :development do
   gem 'capistrano'
